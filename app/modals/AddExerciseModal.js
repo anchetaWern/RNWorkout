@@ -54,19 +54,21 @@ class AddExerciseModal extends Component {
   }
 
   addExercise = () => {
-    const name = this.state.exercise_name;
-    const id = name.replace(" ", "_");
-    this.props.addExercise(id, name);
-    this.props.channel.trigger("client-added-exercise", {
-      id,
-      name
-    });
+    if (this.state.exercise_name) {
+      const name = this.state.exercise_name;
+      const id = name.replace(" ", "_");
+      this.props.addExercise(id, name);
+      this.props.channel.trigger("client-added-exercise", {
+        id,
+        name
+      });
 
-    this.setState({
-      exercise_name: ""
-    });
+      this.setState({
+        exercise_name: ""
+      });
 
-    this.props.closeModal();
+      this.props.closeModal();
+    }
   };
 }
 

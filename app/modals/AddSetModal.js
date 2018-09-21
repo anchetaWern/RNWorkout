@@ -57,22 +57,24 @@ class AddSetModal extends Component {
   }
 
   addSet = () => {
-    const id = uniqid();
-    const exercise_id = this.props.ui.current_exercise;
-    const weight = this.state.weight;
+    if (this.state.weight) {
+      const id = uniqid();
+      const exercise_id = this.props.ui.current_exercise;
+      const weight = this.state.weight;
 
-    this.props.addSet(id, exercise_id, weight);
-    this.props.channel.trigger("client-added-set", {
-      id,
-      exercise_id,
-      weight
-    });
+      this.props.addSet(id, exercise_id, weight);
+      this.props.channel.trigger("client-added-set", {
+        id,
+        exercise_id,
+        weight
+      });
 
-    this.props.closeModal();
+      this.props.closeModal();
 
-    this.setState({
-      weight: ""
-    });
+      this.setState({
+        weight: ""
+      });
+    }
   };
 }
 
