@@ -1,33 +1,29 @@
 import React, { Component } from "react";
 import { View, Text, FlatList, ScrollView } from "react-native";
 
-import { connect } from "react-redux";
-
-import uniqid from "../../helpers/uniqid";
+/*
+todo:
+- extract connect from react-redux
+- import helper for generating unique IDs
+*/
 
 import IconButton from "../IconButton";
 import List from "../List";
 import SetContainer from "../SetContainer";
 import AlertBox from "../AlertBox";
 
-import {
-  modalToggled,
-  setExercise,
-  incrementedSet,
-  addedExercise,
-  addedSet
-} from "../../actions";
+// todo: import actions
 
 import styles from "./styles";
 
 class ConnectedFlatList extends Component {
   render() {
-    const exercises =
-      this.props.user == "me"
-        ? this.props.exercises
-        : this.props.others_exercises;
-    const sets =
-      this.props.user == "me" ? this.props.sets : this.props.others_sets;
+    /*
+    todo:
+    - get the relevant exercises and sets data from props
+    */
+    const exercises = [];
+    const sets = [];
 
     if (exercises.length) {
       return (
@@ -54,8 +50,11 @@ class ConnectedFlatList extends Component {
             color="#333"
             onPress={() => {
               if (this.props.user == "me") {
-                this.props.openAddSetModal();
-                this.props.setExercise(item.exercise_id);
+                /*
+                todo:
+                - execute function for updating the store to show the add set modal
+                - execute function for setting the current exercise on the store
+                */
               }
             }}
           />
@@ -66,14 +65,14 @@ class ConnectedFlatList extends Component {
   };
 
   renderSets = (exercise_id, key) => {
-    const id = uniqid();
-    const l_key = exercise_id + ":" + key + ":" + id;
+    /*
+    todo:
+    - generate unique value for the listKey prop for the List component
+    - get the relevant state from the props
+    - filter the specific sets for the current exercise
+    */
 
-    const sets_data =
-      this.props.user == "me" ? this.props.sets : this.props.others_sets;
-    const sets = sets_data.filter(item => {
-      return item.exercise_id == exercise_id;
-    });
+    const sets = [];
 
     if (sets.length) {
       return (
@@ -92,11 +91,11 @@ class ConnectedFlatList extends Component {
                   reps={item.reps}
                   onPress={() => {
                     if (this.props.user == "me") {
-                      this.props.incrementSet(item.key, item.reps);
-                      this.props.channel.trigger("client-incremented-set", {
-                        set_id: item.key,
-                        reps: item.reps
-                      });
+                      /*
+                      todo:
+                      - add code for dispatching action for incrementing a specific set
+                      - add code triggering a client event for publishing the details for the incremented set
+                      */
                     }
                   }}
                 />
@@ -109,30 +108,16 @@ class ConnectedFlatList extends Component {
   };
 }
 
-const mapStateToProps = state => {
-  return {
-    exercises: state.exercises.exercises,
-    sets: state.sets.sets,
-    others_exercises: state.exercises.others_exercises,
-    others_sets: state.sets.others_sets
-  };
-};
+/*
+todo:
+- add code for mapping functions for dispatching actions for:
+  - opening add set modal
+  - setting the current exercise
+  - incrementing a specific set
 
-const mapDispatchToProps = dispatch => {
-  return {
-    openAddSetModal: () => {
-      dispatch(modalToggled("addSetModal", true));
-    },
-    setExercise: exercise_id => {
-      dispatch(setExercise(exercise_id));
-    },
-    incrementSet: (set_id, reps) => {
-      dispatch(incrementedSet(set_id, reps));
-    }
-  };
-};
+- add code for mapping relevant store data as props to this component
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConnectedFlatList);
+- convert this component to a connected component
+*/
+
+export default ConnectedFlatList;

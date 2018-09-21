@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import { Modal, View, Text, Button, TextInput } from "react-native";
 
-import { connect } from "react-redux";
-
 import IconButton from "../components/IconButton";
 
 import componentCommonStyles from "../components/styles/common";
 import modalCommonStyles from "./styles/common";
 
-import { modalToggled, addedSet } from "../actions";
+/*
+todo:
 
-import uniqid from "../helpers/uniqid";
+- extract connect from react-redux
+- import actions for toggling modal visibility, and adding a new set
+- import uniqid
+*/
 
 class AddSetModal extends Component {
   state = {
@@ -21,7 +23,7 @@ class AddSetModal extends Component {
     return (
       <Modal
         animationType="slide"
-        visible={this.props.ui.addSetModalIsOpen}
+        visible={false}
         onRequestClose={() => {
           // nothing
         }}
@@ -33,7 +35,7 @@ class AddSetModal extends Component {
             color="#FFF"
             size={18}
             onPress={() => {
-              this.props.closeModal();
+              // todo: call function for dispatching action for closing this modal
             }}
           />
         </View>
@@ -57,41 +59,35 @@ class AddSetModal extends Component {
   }
 
   addSet = () => {
-    const id = uniqid();
-    const exercise_id = this.props.ui.current_exercise;
-    const weight = this.state.weight;
+    /*
+    todo:
+    - generate a unique ID
+    - get the set data from the state
 
-    this.props.addSet(id, exercise_id, weight);
-    this.props.channel.trigger("client-added-set", {
-      id,
-      exercise_id,
-      weight
-    });
+    - dispatch action for adding a set
 
-    this.props.closeModal();
+    - trigger a client event for publishing the set data using the Pusher channel
 
-    this.setState({
-      weight: ""
-    });
+    - close modal by dispatching an action to update store
+    */
+
+    if (this.state.weight) {
+      this.setState({
+        weight: ""
+      });
+    }
   };
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    closeModal: () => {
-      dispatch(modalToggled("addSetModal", false));
-    },
-    addSet: (setID, exerciseID, weight) => {
-      dispatch(addedSet(setID, exerciseID, weight));
-    }
-  };
-};
+/*
+todo:
+- add code for mapping functions for dispatching actions for:
+  - hiding the add set modal
+  - adding a new set
 
-const mapStateToProps = ({ ui }) => ({
-  ...ui
-});
+- add code for mapping relevant store data as props to this component
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddSetModal);
+- convert this component to a connected component
+*/
+
+export default AddSetModal;

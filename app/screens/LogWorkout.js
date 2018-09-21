@@ -10,21 +10,18 @@ import {
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Provider } from "react-redux";
-import { createStore } from "redux";
+/*
+todo:
 
-import Pusher from "pusher-js/react-native";
+- extract Provider from react-redux
+- extract creatStore from redux
 
-import reducers from "../reducers";
+- import Pusher
 
-import {
-  modalToggled,
-  incrementedSet,
-  addedExercise,
-  addedSet
-} from "../actions";
-
-const store = createStore(reducers);
+- import reducers
+- import actions
+- create store
+*/
 
 import List from "../components/List";
 import IconButton from "../components/IconButton";
@@ -51,7 +48,7 @@ export default class LogWorkout extends React.Component {
           color="#FFF"
           onPress={() => {
             if (routeName == "Log") {
-              params.showAddExerciseModal();
+              // todo: call function that dispatches an action for showing the add exercise modal
             }
           }}
         />
@@ -71,133 +68,87 @@ export default class LogWorkout extends React.Component {
 
   constructor(props) {
     super(props);
-    this.pusher = null;
-    this.my_channel = null;
-    this.followed_channel = null;
+    // add initial value for Pusher and channels
   }
 
   componentDidMount() {
-    this.props.navigation.setParams({
-      showAddExerciseModal: this.showAddExerciseModal
-    });
-
-    this.pusher = new Pusher("YOUR PUSHER APP KEY", {
-      authEndpoint: "YOUR_NGROK_URL/pusher/auth",
-      cluster: "YOUR_PUSHER_APP_CLUSTER",
-      encrypted: true
-    });
-
-    this.my_channel = this.pusher.subscribe(`private-user-${username}`);
-    this.my_channel.bind("pusher:subscription_error", status => {
-      Alert.alert(
-        "Error occured",
-        "Cannot connect to Pusher. Please restart the app."
-      );
-    });
-
-    this.my_channel.bind("pusher:subscription_succeeded", () => {
-      console.log("subscription to my channel ok!");
-    });
+    /*
+    todo:
+    - set navigation param for adding the function to be executed when the right header button is clicked
+    - initialize Pusher
+    - subscribe to user's own channel
+    */
   }
 
   showAddExerciseModal = () => {
-    store.dispatch(modalToggled("addExerciseModal", true));
+    // todo: dispatch action for updating the store to show the add exercise modal
   };
 
   subscribe = () => {
-    this.followed_channel = this.pusher.subscribe(
-      `private-user-${this.state.subscribedToUsername}`
-    );
-
-    this.followed_channel.bind("pusher:subscription_error", status => {
-      Alert.alert(
-        "Error occured",
-        "Cannot connect to Pusher. Please restart the app."
-      );
-    });
-
-    this.followed_channel.bind("pusher:subscription_succeeded", () => {
-      Alert.alert("Success", "You are now subscribed!");
-
-      this.followed_channel.bind("client-added-exercise", data => {
-        store.dispatch(addedExercise(data.id, data.name, "others"));
-      });
-
-      this.followed_channel.bind("client-added-set", data => {
-        store.dispatch(
-          addedSet(data.id, data.exercise_id, data.weight, "others")
-        );
-      });
-
-      this.followed_channel.bind("client-incremented-set", data => {
-        store.dispatch(incrementedSet(data.set_id, data.reps, "others"));
-      });
-    });
+    /*
+    todo:
+    - subscribed to username entered in the text field for entering the buddies name
+    - bind to events that gets triggered when a new exercise is added, a new set is added, and a set is incremented
+    */
   };
 
   render() {
+    /*
+    todo:
+    - wrap everything in a Provider and component so the store can be passed down and used
+    */
     return (
-      <Provider store={store}>
-        <View>
-          {this.props.navigation.state.routeName == "Log" &&
-            this.my_channel && (
-              <View style={styles.log_content}>
-                <View style={styles.top_content}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      Clipboard.setString(username);
-                      Alert.alert(
-                        "Copied!",
-                        "Username was copied to clipboard."
-                      );
-                    }}
-                  >
-                    <View style={styles.box}>
-                      <Text style={styles.box_text}>{username}</Text>
-                      <MaterialIcons
-                        name="content-copy"
-                        size={18}
-                        color="#333"
-                      />
-                    </View>
-                  </TouchableOpacity>
+      <View>
+        {this.props.navigation.state.routeName == "Log" && (
+          <View style={styles.log_content}>
+            <View style={styles.top_content}>
+              <TouchableOpacity
+                onPress={() => {
+                  Clipboard.setString(username);
+                  Alert.alert("Copied!", "Username was copied to clipboard.");
+                }}
+              >
+                <View style={styles.box}>
+                  <Text style={styles.box_text}>{username}</Text>
+                  <MaterialIcons name="content-copy" size={18} color="#333" />
                 </View>
-
-                <AddExerciseModal channel={this.my_channel} />
-                <AddSetModal channel={this.my_channel} />
-
-                <ConnectedFlatList user={"me"} channel={this.my_channel} />
-              </View>
-            )}
-
-          {this.props.navigation.state.routeName == "Track" && (
-            <View>
-              <View style={styles.top_content}>
-                <View style={{ flex: 1 }}>
-                  <TextInput
-                    style={styles.box}
-                    onChangeText={subscribedToUsername =>
-                      this.setState({ subscribedToUsername })
-                    }
-                  >
-                    <Text style={styles.box_text}>
-                      {this.state.subscribedToUsername}
-                    </Text>
-                  </TextInput>
-                </View>
-
-                <TouchableOpacity onPress={this.subscribe}>
-                  <View style={styles.action_button}>
-                    <MaterialIcons name="forward" size={35} color="#333" />
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <ConnectedFlatList user={"others"} />
+              </TouchableOpacity>
             </View>
-          )}
-        </View>
-      </Provider>
+
+            <AddExerciseModal />
+            <AddSetModal />
+
+            <ConnectedFlatList user={"me"} />
+          </View>
+        )}
+
+        {this.props.navigation.state.routeName == "Track" && (
+          <View>
+            <View style={styles.top_content}>
+              <View style={{ flex: 1 }}>
+                <TextInput
+                  style={styles.box}
+                  onChangeText={subscribedToUsername =>
+                    this.setState({ subscribedToUsername })
+                  }
+                >
+                  <Text style={styles.box_text}>
+                    {this.state.subscribedToUsername}
+                  </Text>
+                </TextInput>
+              </View>
+
+              <TouchableOpacity onPress={this.subscribe}>
+                <View style={styles.action_button}>
+                  <MaterialIcons name="forward" size={35} color="#333" />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <ConnectedFlatList user={"others"} />
+          </View>
+        )}
+      </View>
     );
   }
 }

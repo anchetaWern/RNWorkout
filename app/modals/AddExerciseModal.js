@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import { Modal, View, Text, Button, TextInput } from "react-native";
 
-import { connect } from "react-redux";
-
 import IconButton from "../components/IconButton";
 import componentCommonStyles from "../components/styles/common";
 import modalCommonStyles from "./styles/common";
 
-import { modalToggled, addedExercise } from "../actions";
+/*
+todo:
 
-import uniqid from "../helpers/uniqid";
+- extract connect from react-redux
+- import actions for toggling modal visibility, and adding a new exercise
+*/
 
 class AddExerciseModal extends Component {
   state = {
@@ -20,7 +21,7 @@ class AddExerciseModal extends Component {
     return (
       <Modal
         animationType="slide"
-        visible={this.props.ui.addExerciseModalIsOpen}
+        visible={false}
         onRequestClose={() => {
           // nothing
         }}
@@ -32,7 +33,7 @@ class AddExerciseModal extends Component {
             color="#FFF"
             size={18}
             onPress={() => {
-              this.props.closeModal();
+              // todo: call function for dispatching action for closing this modal
             }}
           />
         </View>
@@ -54,38 +55,35 @@ class AddExerciseModal extends Component {
   }
 
   addExercise = () => {
-    const name = this.state.exercise_name;
-    const id = name.replace(" ", "_");
-    this.props.addExercise(id, name);
-    this.props.channel.trigger("client-added-exercise", {
-      id,
-      name
-    });
+    if (this.state.exercise_name) {
+      this.setState({
+        exercise_name: ""
+      });
+    }
 
-    this.setState({
-      exercise_name: ""
-    });
+    /*
+    todo:
 
-    this.props.closeModal();
+    - get the exercise data from the state
+
+    - dispatch action for adding an exercise
+
+    - trigger a client event for publishing the exercise data using the Pusher channel
+
+    - close modal by dispatching an action to update store
+    */
   };
 }
 
-const mapStateToProps = ({ ui }) => ({
-  ...ui
-});
+/*
+todo:
+- add code for mapping functions for dispatching actions for:
+  - hiding the add exercise modal
+  - adding a new exercise
 
-const mapDispatchToProps = dispatch => {
-  return {
-    closeModal: () => {
-      dispatch(modalToggled("addExerciseModal", false));
-    },
-    addExercise: (id, name) => {
-      dispatch(addedExercise(id, name));
-    }
-  };
-};
+- add code for mapping relevant store data as props to this component
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddExerciseModal);
+- convert this component to a connected component
+*/
+
+export default AddExerciseModal;
