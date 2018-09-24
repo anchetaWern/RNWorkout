@@ -1,6 +1,8 @@
 # RNWorkout
 A workout sharing app created with React Native and Pusher.
 
+Full tutorial is available at [https://pusher.com/tutorials/workout-tracker-react-native](https://pusher.com/tutorials/workout-tracker-react-native)
+
 ### Prerequisites
 
 - React Native development environment or [Expo](https://expo.io/)
