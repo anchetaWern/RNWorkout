@@ -27,7 +27,7 @@ git clone https://github.com/anchetaWern/RNWorkout.git
 ```
 cd RNWorkout
 yarn install
-react-native eject
+react-native eject #only if you're not using Expo
 ```
 
 3. Update Pusher config on `app/screens/LogWorkout.js` file:
